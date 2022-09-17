@@ -1,6 +1,6 @@
-# Adding a Module to your ABP Framework project made simple
+## Adding a Module to an ABP Framework project made simple
 
-## Create a ABP Framework application
+## Create a new ABP Framework application
 
 ```bash
     abp new BookStore -u blazor -o BookStore --preview
@@ -11,7 +11,7 @@ Start API and Blazor project
 
 ## Create a PdfGenerator ABP Module
 
-Open a command prompt  in the src folder of the project and add a new class library
+Open a command prompt in the src folder of the project and add a new class library
 
 ```bash
     dotnet new classlib -n PdfGenerator
