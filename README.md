@@ -1,6 +1,6 @@
 ## Adding a Module to an ABP project made simple
 
-## Create a new ABP Framework application
+### Create a new ABP Framework application
 
 ```bash
     abp new BookStore -u blazor -o BookStore --preview
@@ -9,7 +9,7 @@
 Run migrations
 Start API and Blazor project
 
-## Create a PdfGenerator ABP Module
+### Create a PdfGenerator ABP Module
 
 Open a command prompt in the src folder of the project and add a new class library
 
@@ -17,7 +17,7 @@ Open a command prompt in the src folder of the project and add a new class libra
     dotnet new classlib -n PdfGenerator
 ```
 
-## Add PdfGenerator class project to solution
+### Add PdfGenerator class project to solution
 
 Go to the root of your ABP project and run the command below:
 
@@ -33,7 +33,7 @@ Open a command prompt in the PdfGenerator class library and install Volo.Abp.Cor
     abp add-package Volo.Abp.Core
 ```
 
-## Add a PdfGeneratorSettings section to the appsettings.json file in hte HttpApi.Host project
+### Add a PdfGeneratorSettings section to the appsettings.json file in hte HttpApi.Host project
 
 ```bash
   "PdfGeneratorSettings" : { 
@@ -44,7 +44,7 @@ Open a command prompt in the PdfGenerator class library and install Volo.Abp.Cor
 
 ```
 
-## Add a PdfGeneratorSettingsOptions class to the PdfGenerator class library project
+### Add a PdfGeneratorSettingsOptions class to the PdfGenerator class library project
 
 ```csharp
 namespace PdfGenerator
@@ -58,7 +58,7 @@ namespace PdfGenerator
 }
 ```
 
-## Add a MyPdfGeneratorModule to the PdfGenerator class library project
+### Add a MyPdfGeneratorModule to the PdfGenerator class library project
 
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
@@ -79,7 +79,7 @@ namespace PdfGenerator
 }
 ```
 
-## Add an IPdfGeneratorService interface and a PdfGeneratorService class to the PdfGenerator class library project
+### Add an IPdfGeneratorService interface and a PdfGeneratorService class to the PdfGenerator class library project
 
 ```csharp
 namespace PdfGenerator
@@ -168,6 +168,6 @@ namespace BookStore.Application
 }
 ```
 
-## Run API and test api/app/my-pdf-generator/pdf-generator-service-test endpoint
+### Run API and test api/app/my-pdf-generator/pdf-generator-service-test endpoint
 
 
