@@ -1,4 +1,4 @@
-## Adding a Module to an ABP Framework project made simple
+## Adding a Module to an ABP project made simple
 
 ## Create a new ABP Framework application
 
