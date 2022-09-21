@@ -1,7 +1,9 @@
+using Volo.Abp.DependencyInjection;
+
 namespace PdfGenerator
 {
-    public interface IPdfGeneratorService
+    public interface IPdfGeneratorService :  ITransientDependency
     {
-        Task GeneratePdf();
+        Task<byte[]> GeneratePdf();
     }
 }
