@@ -4,6 +4,6 @@ namespace PdfGenerator
 {
     public interface IPdfGeneratorService :  ITransientDependency
     {
-        Task<byte[]> GeneratePdf();
+        Task<byte[]> Generate();
     }
 }

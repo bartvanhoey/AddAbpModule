@@ -1,17 +1,22 @@
 ## Adding a Module to an ABP project made simple
 
+The ABP Framework makes it possible to develop truly modular systems. [Software modularity](https://www.techopedia.com/definition/24772/modularity)
+
+In today's blog post I will show you how to integrate your own module, in this case a simple PdfGenerator, into an ABP Framework application.
+
 ### Create a new ABP Framework application
 
 ```bash
-    abp new BookStore -u blazor -o BookStore --preview
+    abp new BookStore -u blazor -o BookStore
 ```
 
-Run migrations
-Start API and Blazor project
+* Run the DbMigrator project to apply the database migrations
+* Start both the HttpApi.Host project and Blazor project
+* Stop both the HttpApi.Host project and Blazor project
 
-### Create a PdfGenerator ABP Module
+### Create a PdfGenerator ABP Module ()
 
-Open a command prompt in the src folder of the project and add a new class library
+Open a **command prompt** in the **src** folder of the project and **add a new class library**
 
 ```bash
     dotnet new classlib -n PdfGenerator
@@ -19,29 +24,28 @@ Open a command prompt in the src folder of the project and add a new class libra
 
 ### Add PdfGenerator class project to solution
 
-Go to the root of your ABP project and run the command below:
+Go to the **root of your ABP project** and run the command below:
 
 ```bash
     dotnet sln add src\PdfGenerator\PdfGenerator.csproj
 ```
 
-### Add Volo.Abp.Core nuget package
+### Install Nuget packages
 
-Open a command prompt in the PdfGenerator class library and install Volo.Abp.Core nuget package.
+Open a **command prompt** in the **root of the PdfGenerator** class library and  install the nuget packages below.
 
 ```bash
     abp add-package Volo.Abp.Core
+    dotnet add package PdfSharpCore
 ```
 
 ### Add a PdfGeneratorSettings section to the appsettings.json file in hte HttpApi.Host project
 
 ```bash
-  "PdfGeneratorSettings" : { 
-    "UserName" : "your-username", 
-    "Password" : "MyPassword1!",
-    "EmailAddress" : "your-username@hotmail.com"
-  }
-
+  "PdfGeneratorSettings": {
+        "UserName": "your-username",
+        "EmailAddress": "your-username@hotmail.com"
+    }
 ```
 
 ### Add a PdfGeneratorSettingsOptions class to the PdfGenerator class library project
@@ -52,13 +56,12 @@ namespace PdfGenerator
     public class PdfGeneratorSettingsOptions
     {
         public string? UserName { get; set; }
-        public string? Password { get; set; }
         public string? EmailAddress { get; set; }
     }
 }
 ```
 
-### Add a MyPdfGeneratorModule to the PdfGenerator class library project
+### Add a MyPdfGeneratorModule class to the PdfGenerator class library project
 
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
@@ -82,50 +85,65 @@ namespace PdfGenerator
 ### Add an IPdfGeneratorService interface and a PdfGeneratorService class to the PdfGenerator class library project
 
 ```csharp
-namespace PdfGenerator
-{
-    public interface IPdfGeneratorService
-    {
-        Task GeneratePdf();
-    }
-}
-
-```
-
-```csharp
-using System;
+using Volo.Abp.DependencyInjection;
 using Microsoft.Extensions.Options;
+using PdfSharpCore.Drawing;
+using PdfSharpCore.Fonts;
+using PdfSharpCore.Pdf;
+using PdfSharpCore.Utils;
 
 namespace PdfGenerator
 {
+    public interface IPdfGeneratorService : ITransientDependency
+    {
+        Task<byte[]> Generate();
+    }
+
     public class PdfGeneratorService : IPdfGeneratorService
     {
         private readonly PdfGeneratorSettingsOptions _options;
-
         public PdfGeneratorService(IOptions<PdfGeneratorSettingsOptions> options) => _options = options.Value;
-
-        public async Task GeneratePdf()
+        
+        public async Task<byte[]> Generate()
         {
 
-            Console.WriteLine($"username: {_options.UserName} - email: {_options.EmailAddress}");
-            await Task.CompletedTask;
+            GlobalFontSettings.FontResolver = new FontResolver();
+
+            var document = new PdfDocument();
+            var page = document.AddPage();
+
+            var gfx = XGraphics.FromPdfPage(page);
+            var font = new XFont("Arial", 20, XFontStyle.Bold);
+
+            var textColor = XBrushes.Black;
+            var layout = new XRect(20, 20, page.Width, page.Height);
+            var format = XStringFormats.Center;
+
+            gfx.DrawString($"Pdf created by {_options.UserName}!", font, textColor, layout, format);
+
+            byte[] fileContents;
+            using (var stream = new MemoryStream())
+            {
+                document.Save(stream, true);
+                fileContents = stream.ToArray();
+            }
+            return await Task.FromResult(fileContents);
         }
     }
 }
-
 ```
 
 ### Add a project reference to the PdfGeneratorModule class library project in the Application project
 
-Open a command prompt in the Application project
+Open a **command prompt** in the **root of the Application** project
 
 ```bash
-    dotnet add reference ../../src/PdfGenerator/PdfGenerator.csproj
+   dotnet add reference ../../src/PdfGenerator/PdfGenerator.csproj
 ```
 
 ### Attribute DependsOn in the BookStoreApplicationModule class in the Application project
 
-Add a typeof(MyPdfGeneratorModule) entry in the DependsOn Attribute
+Add a **typeof(MyPdfGeneratorModule)** entry in the **DependsOnAttribute**
 
 ```csharp
 [DependsOn(
@@ -140,34 +158,94 @@ Add a typeof(MyPdfGeneratorModule) entry in the DependsOn Attribute
     typeof(MyPdfGeneratorModule)
     )]
 
-### Add A MyPdfGeneratorAppService class to test the Application project
+### Add A IExportPdfAppService interface the Application.Contracts project
 
 ```csharp
-using System;
 using System.Threading.Tasks;
-using PdfGenerator;
+using Volo.Abp.Application.Services;
 
-namespace BookStore.Application
+namespace BookStore.Application.Contracts
 {
-    public class MyPdfGeneratorAppService : BookStoreAppService
+    public interface IExportPdfAppService : IApplicationService
     {
-        private readonly IPdfGeneratorService _PdfGeneratorService;
-
-        public MyPdfGeneratorAppService(IPdfGeneratorService PdfGeneratorService) => _PdfGeneratorService = PdfGeneratorService;
-
-        public async Task PdfGeneratorServiceTest() { 
-            
-            Console.WriteLine("==========================================");
-            await _PdfGeneratorService.GeneratePdf();
-            Console.WriteLine("==========================================");
-
-            await Task.CompletedTask;
-        }
-
+        Task<byte[]> GeneratePdf();
     }
 }
 ```
 
-### Run API and test api/app/my-pdf-generator/pdf-generator-service-test endpoint
+### Add A ExportPdfAppService class to test the Application project
+
+```csharp
+using System.Threading.Tasks;
+using BookStore.Application.Contracts;
+using PdfGenerator;
+
+namespace BookStore.Application
+{
+    public class ExportPdfAppService : BookStoreAppService, IExportPdfAppService
+    {    
+        private readonly IPdfGeneratorService _pdfService;
+
+        public ExportPdfAppService(IPdfGeneratorService pdfGeneratorService) 
+            => _pdfService = pdfGeneratorService;
+
+        public async Task<byte[]> GeneratePdf() => await _pdfService.Generate();
+    }
+}
+```
+
+### add a exporttopdf.js file to the wwwroot/js folder of the Blazor project
+
+```bash
+function saveAsFile(filename, bytesBase64) {
+    var link = document.createElement('a');
+    link.download = filename;
+    link.href = 'data:application/octet-stream;base64,' + bytesBase64;
+    document.body.appendChild(link); // Needed for Firefox
+    link.click();
+    document.body.removeChild(link);
+}
+```
+
+### add a reference to exporttopdf.js in the index.html file in the Blazor project
+
+```html
+<!DOCTYPE html>
+<html>
+    <!-- other code here ... -->
+    <script src="js/exporttopdf.js"></script>
+</body>
+</html>
+```
+
+### Replace contents from Index.razor page in the Blazor project
+
+```html
+@page "/"
+@using BookStore.Application.Contracts
+@inject IExportPdfAppService ExportPdfAppService
+@inject IJSRuntime JsRuntime
+
+<Row Class="d-flex px-0 mx-0 mb-1">
+    <Button Clicked="@(ExportPdf)" class="p-0 ml-auto mr-2" style="background-color: transparent"
+            title="Download">
+        <span class="fa fa-file-pdf fa-lg m-0" style="color: #008000; background-color: white;"
+              aria-hidden="true">
+        </span>
+        Generate Pdf!
+    </Button>
+</Row>
+
+@code {
+    private async Task ExportPdf()
+    {
+        var excelBytes = await ExportPdfAppService.GeneratePdf();
+        await JsRuntime.InvokeVoidAsync("saveAsFile", $"test_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.pdf",
+            Convert.ToBase64String(excelBytes));
+    }
+}
+```
+
+### Run the HttpApi.Host and Blazor projects
 
 

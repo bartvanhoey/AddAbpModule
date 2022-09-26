@@ -14,32 +14,33 @@ using Volo.Abp.PermissionManagement.OpenIddict;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
 
-namespace BookStore;
-
-[DependsOn(
-    typeof(BookStoreDomainSharedModule),
-    typeof(AbpAuditLoggingDomainModule),
-    typeof(AbpBackgroundJobsDomainModule),
-    typeof(AbpFeatureManagementDomainModule),
-    typeof(AbpIdentityDomainModule),
-    typeof(AbpOpenIddictDomainModule),
-    typeof(AbpPermissionManagementDomainOpenIddictModule),
-    typeof(AbpPermissionManagementDomainIdentityModule),
-    typeof(AbpSettingManagementDomainModule),
-    typeof(AbpTenantManagementDomainModule),
-    typeof(AbpEmailingModule)
-)]
-public class BookStoreDomainModule : AbpModule
+namespace BookStore
 {
-    public override void ConfigureServices(ServiceConfigurationContext context)
+    [DependsOn(
+        typeof(BookStoreDomainSharedModule),
+        typeof(AbpAuditLoggingDomainModule),
+        typeof(AbpBackgroundJobsDomainModule),
+        typeof(AbpFeatureManagementDomainModule),
+        typeof(AbpIdentityDomainModule),
+        typeof(AbpOpenIddictDomainModule),
+        typeof(AbpPermissionManagementDomainOpenIddictModule),
+        typeof(AbpPermissionManagementDomainIdentityModule),
+        typeof(AbpSettingManagementDomainModule),
+        typeof(AbpTenantManagementDomainModule),
+        typeof(AbpEmailingModule)
+    )]
+    public class BookStoreDomainModule : AbpModule
     {
-        Configure<AbpMultiTenancyOptions>(options =>
+        public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            options.IsEnabled = MultiTenancyConsts.IsEnabled;
-        });
+            Configure<AbpMultiTenancyOptions>(options =>
+            {
+                options.IsEnabled = MultiTenancyConsts.IsEnabled;
+            });
 
 #if DEBUG
-        context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
+            context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
+        }
     }
 }

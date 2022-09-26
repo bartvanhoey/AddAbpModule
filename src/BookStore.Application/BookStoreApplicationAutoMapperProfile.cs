@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
 
-namespace BookStore;
-
-public class BookStoreApplicationAutoMapperProfile : Profile
+namespace BookStore
 {
-    public BookStoreApplicationAutoMapperProfile()
+    public class BookStoreApplicationAutoMapperProfile : Profile
     {
-        /* You can configure your AutoMapper mapping configuration here.
-         * Alternatively, you can split your mapping configurations
-         * into multiple profile classes for a better organization. */
+        public BookStoreApplicationAutoMapperProfile()
+        {
+            /* You can configure your AutoMapper mapping configuration here.
+             * Alternatively, you can split your mapping configurations
+             * into multiple profile classes for a better organization. */
+        }
     }
 }

@@ -6,25 +6,26 @@ using Volo.Abp.Http.Client;
 using Volo.Abp.Http.Client.IdentityModel;
 using Volo.Abp.Modularity;
 
-namespace BookStore.HttpApi.Client.ConsoleTestApp;
-
-[DependsOn(
-    typeof(AbpAutofacModule),
-    typeof(BookStoreHttpApiClientModule),
-    typeof(AbpHttpClientIdentityModelModule)
-    )]
-public class BookStoreConsoleApiClientModule : AbpModule
+namespace BookStore.HttpApi.Client.ConsoleTestApp
 {
-    public override void PreConfigureServices(ServiceConfigurationContext context)
+    [DependsOn(
+        typeof(AbpAutofacModule),
+        typeof(BookStoreHttpApiClientModule),
+        typeof(AbpHttpClientIdentityModelModule)
+    )]
+    public class BookStoreConsoleApiClientModule : AbpModule
     {
-        PreConfigure<AbpHttpClientBuilderOptions>(options =>
+        public override void PreConfigureServices(ServiceConfigurationContext context)
         {
-            options.ProxyClientBuildActions.Add((remoteServiceName, clientBuilder) =>
+            PreConfigure<AbpHttpClientBuilderOptions>(options =>
             {
-                clientBuilder.AddTransientHttpErrorPolicy(
-                    policyBuilder => policyBuilder.WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(Math.Pow(2, i)))
-                );
+                options.ProxyClientBuildActions.Add((remoteServiceName, clientBuilder) =>
+                {
+                    clientBuilder.AddTransientHttpErrorPolicy(
+                        policyBuilder => policyBuilder.WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(Math.Pow(2, i)))
+                    );
+                });
             });
-        });
+        }
     }
 }

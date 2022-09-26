@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
 
-namespace BookStore.Data;
-
-public interface IBookStoreDbSchemaMigrator
+namespace BookStore.Data
 {
-    Task MigrateAsync();
+    public interface IBookStoreDbSchemaMigrator
+    {
+        Task MigrateAsync();
+    }
 }

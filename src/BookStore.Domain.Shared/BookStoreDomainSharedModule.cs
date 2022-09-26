@@ -13,46 +13,47 @@ using Volo.Abp.TenantManagement;
 using Volo.Abp.Validation.Localization;
 using Volo.Abp.VirtualFileSystem;
 
-namespace BookStore;
-
-[DependsOn(
-    typeof(AbpAuditLoggingDomainSharedModule),
-    typeof(AbpBackgroundJobsDomainSharedModule),
-    typeof(AbpFeatureManagementDomainSharedModule),
-    typeof(AbpIdentityDomainSharedModule),
-    typeof(AbpOpenIddictDomainSharedModule),
-    typeof(AbpPermissionManagementDomainSharedModule),
-    typeof(AbpSettingManagementDomainSharedModule),
-    typeof(AbpTenantManagementDomainSharedModule)    
-    )]
-public class BookStoreDomainSharedModule : AbpModule
+namespace BookStore
 {
-    public override void PreConfigureServices(ServiceConfigurationContext context)
+    [DependsOn(
+        typeof(AbpAuditLoggingDomainSharedModule),
+        typeof(AbpBackgroundJobsDomainSharedModule),
+        typeof(AbpFeatureManagementDomainSharedModule),
+        typeof(AbpIdentityDomainSharedModule),
+        typeof(AbpOpenIddictDomainSharedModule),
+        typeof(AbpPermissionManagementDomainSharedModule),
+        typeof(AbpSettingManagementDomainSharedModule),
+        typeof(AbpTenantManagementDomainSharedModule)    
+    )]
+    public class BookStoreDomainSharedModule : AbpModule
     {
-        BookStoreGlobalFeatureConfigurator.Configure();
-        BookStoreModuleExtensionConfigurator.Configure();
-    }
-
-    public override void ConfigureServices(ServiceConfigurationContext context)
-    {
-        Configure<AbpVirtualFileSystemOptions>(options =>
+        public override void PreConfigureServices(ServiceConfigurationContext context)
         {
-            options.FileSets.AddEmbedded<BookStoreDomainSharedModule>();
-        });
+            BookStoreGlobalFeatureConfigurator.Configure();
+            BookStoreModuleExtensionConfigurator.Configure();
+        }
 
-        Configure<AbpLocalizationOptions>(options =>
+        public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            options.Resources
-                .Add<BookStoreResource>("en")
-                .AddBaseTypes(typeof(AbpValidationResource))
-                .AddVirtualJson("/Localization/BookStore");
+            Configure<AbpVirtualFileSystemOptions>(options =>
+            {
+                options.FileSets.AddEmbedded<BookStoreDomainSharedModule>();
+            });
 
-            options.DefaultResourceType = typeof(BookStoreResource);
-        });
+            Configure<AbpLocalizationOptions>(options =>
+            {
+                options.Resources
+                    .Add<BookStoreResource>("en")
+                    .AddBaseTypes(typeof(AbpValidationResource))
+                    .AddVirtualJson("/Localization/BookStore");
 
-        Configure<AbpExceptionLocalizationOptions>(options =>
-        {
-            options.MapCodeNamespace("BookStore", typeof(BookStoreResource));
-        });
+                options.DefaultResourceType = typeof(BookStoreResource);
+            });
+
+            Configure<AbpExceptionLocalizationOptions>(options =>
+            {
+                options.MapCodeNamespace("BookStore", typeof(BookStoreResource));
+            });
+        }
     }
 }

@@ -1,10 +1,11 @@
-﻿namespace BookStore.Blazor.Menus;
-
-public class BookStoreMenus
+﻿namespace BookStore.Blazor.Menus
 {
-    private const string Prefix = "BookStore";
-    public const string Home = Prefix + ".Home";
+    public class BookStoreMenus
+    {
+        private const string Prefix = "BookStore";
+        public const string Home = Prefix + ".Home";
 
-    //Add your menu items here...
+        //Add your menu items here...
 
+    }
 }

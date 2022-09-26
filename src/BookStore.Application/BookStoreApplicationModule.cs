@@ -8,26 +8,27 @@ using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
 
-namespace BookStore;
-
-[DependsOn(
-    typeof(BookStoreDomainModule),
-    typeof(AbpAccountApplicationModule),
-    typeof(BookStoreApplicationContractsModule),
-    typeof(AbpIdentityApplicationModule),
-    typeof(AbpPermissionManagementApplicationModule),
-    typeof(AbpTenantManagementApplicationModule),
-    typeof(AbpFeatureManagementApplicationModule),
-    typeof(AbpSettingManagementApplicationModule),
-    typeof(MyPdfGeneratorModule)
-    )]
-public class BookStoreApplicationModule : AbpModule
+namespace BookStore
 {
-    public override void ConfigureServices(ServiceConfigurationContext context)
+    [DependsOn(
+        typeof(BookStoreDomainModule),
+        typeof(AbpAccountApplicationModule),
+        typeof(BookStoreApplicationContractsModule),
+        typeof(AbpIdentityApplicationModule),
+        typeof(AbpPermissionManagementApplicationModule),
+        typeof(AbpTenantManagementApplicationModule),
+        typeof(AbpFeatureManagementApplicationModule),
+        typeof(AbpSettingManagementApplicationModule),
+        typeof(MyPdfGeneratorModule)
+    )]
+    public class BookStoreApplicationModule : AbpModule
     {
-        Configure<AbpAutoMapperOptions>(options =>
+        public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            options.AddMaps<BookStoreApplicationModule>();
-        });
+            Configure<AbpAutoMapperOptions>(options =>
+            {
+                options.AddMaps<BookStoreApplicationModule>();
+            });
+        }
     }
 }

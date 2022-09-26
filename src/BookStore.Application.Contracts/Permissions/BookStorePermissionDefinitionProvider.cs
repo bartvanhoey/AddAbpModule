@@ -2,19 +2,20 @@
 using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.Localization;
 
-namespace BookStore.Permissions;
-
-public class BookStorePermissionDefinitionProvider : PermissionDefinitionProvider
+namespace BookStore.Permissions
 {
-    public override void Define(IPermissionDefinitionContext context)
+    public class BookStorePermissionDefinitionProvider : PermissionDefinitionProvider
     {
-        var myGroup = context.AddGroup(BookStorePermissions.GroupName);
-        //Define your own permissions here. Example:
-        //myGroup.AddPermission(BookStorePermissions.MyPermission1, L("Permission:MyPermission1"));
-    }
+        public override void Define(IPermissionDefinitionContext context)
+        {
+            var myGroup = context.AddGroup(BookStorePermissions.GroupName);
+            //Define your own permissions here. Example:
+            //myGroup.AddPermission(BookStorePermissions.MyPermission1, L("Permission:MyPermission1"));
+        }
 
-    private static LocalizableString L(string name)
-    {
-        return LocalizableString.Create<BookStoreResource>(name);
+        private static LocalizableString L(string name)
+        {
+            return LocalizableString.Create<BookStoreResource>(name);
+        }
     }
 }

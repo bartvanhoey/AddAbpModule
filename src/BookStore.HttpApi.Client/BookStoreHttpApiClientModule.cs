@@ -8,31 +8,32 @@ using Volo.Abp.TenantManagement;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.VirtualFileSystem;
 
-namespace BookStore;
-
-[DependsOn(
-    typeof(BookStoreApplicationContractsModule),
-    typeof(AbpAccountHttpApiClientModule),
-    typeof(AbpIdentityHttpApiClientModule),
-    typeof(AbpPermissionManagementHttpApiClientModule),
-    typeof(AbpTenantManagementHttpApiClientModule),
-    typeof(AbpFeatureManagementHttpApiClientModule),
-    typeof(AbpSettingManagementHttpApiClientModule)
-)]
-public class BookStoreHttpApiClientModule : AbpModule
+namespace BookStore
 {
-    public const string RemoteServiceName = "Default";
-
-    public override void ConfigureServices(ServiceConfigurationContext context)
+    [DependsOn(
+        typeof(BookStoreApplicationContractsModule),
+        typeof(AbpAccountHttpApiClientModule),
+        typeof(AbpIdentityHttpApiClientModule),
+        typeof(AbpPermissionManagementHttpApiClientModule),
+        typeof(AbpTenantManagementHttpApiClientModule),
+        typeof(AbpFeatureManagementHttpApiClientModule),
+        typeof(AbpSettingManagementHttpApiClientModule)
+    )]
+    public class BookStoreHttpApiClientModule : AbpModule
     {
-        context.Services.AddHttpClientProxies(
-            typeof(BookStoreApplicationContractsModule).Assembly,
-            RemoteServiceName
-        );
+        public const string RemoteServiceName = "Default";
 
-        Configure<AbpVirtualFileSystemOptions>(options =>
+        public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            options.FileSets.AddEmbedded<BookStoreHttpApiClientModule>();
-        });
+            context.Services.AddHttpClientProxies(
+                typeof(BookStoreApplicationContractsModule).Assembly,
+                RemoteServiceName
+            );
+
+            Configure<AbpVirtualFileSystemOptions>(options =>
+            {
+                options.FileSets.AddEmbedded<BookStoreHttpApiClientModule>();
+            });
+        }
     }
 }

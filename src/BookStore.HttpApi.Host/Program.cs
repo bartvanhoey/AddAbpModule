@@ -6,46 +6,47 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 
-namespace BookStore;
-
-public class Program
+namespace BookStore
 {
-    public async static Task<int> Main(string[] args)
+    public class Program
     {
-        Log.Logger = new LoggerConfiguration()
+        public async static Task<int> Main(string[] args)
+        {
+            Log.Logger = new LoggerConfiguration()
 #if DEBUG
-            .MinimumLevel.Debug()
+                .MinimumLevel.Debug()
 #else
             .MinimumLevel.Information()
 #endif
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-            .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-            .WriteTo.Async(c => c.File("Logs/logs.txt"))
-            .WriteTo.Async(c => c.Console())
-            .CreateLogger();
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+                .Enrich.FromLogContext()
+                .WriteTo.Async(c => c.File("Logs/logs.txt"))
+                .WriteTo.Async(c => c.Console())
+                .CreateLogger();
 
-        try
-        {
-            Log.Information("Starting BookStore.HttpApi.Host.");
-            var builder = WebApplication.CreateBuilder(args);
-            builder.Host.AddAppSettingsSecretsJson()
-                .UseAutofac()
-                .UseSerilog();
-            await builder.AddApplicationAsync<BookStoreHttpApiHostModule>();
-            var app = builder.Build();
-            await app.InitializeApplicationAsync();
-            await app.RunAsync();
-            return 0;
-        }
-        catch (Exception ex)
-        {
-            Log.Fatal(ex, "Host terminated unexpectedly!");
-            return 1;
-        }
-        finally
-        {
-            Log.CloseAndFlush();
+            try
+            {
+                Log.Information("Starting BookStore.HttpApi.Host.");
+                var builder = WebApplication.CreateBuilder(args);
+                builder.Host.AddAppSettingsSecretsJson()
+                    .UseAutofac()
+                    .UseSerilog();
+                await builder.AddApplicationAsync<BookStoreHttpApiHostModule>();
+                var app = builder.Build();
+                await app.InitializeApplicationAsync();
+                await app.RunAsync();
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly!");
+                return 1;
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
     }
 }

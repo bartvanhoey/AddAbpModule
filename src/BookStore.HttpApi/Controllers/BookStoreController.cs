@@ -1,14 +1,15 @@
 ﻿using BookStore.Localization;
 using Volo.Abp.AspNetCore.Mvc;
 
-namespace BookStore.Controllers;
-
-/* Inherit your controllers from this class.
- */
-public abstract class BookStoreController : AbpControllerBase
+namespace BookStore.Controllers
 {
-    protected BookStoreController()
+    /* Inherit your controllers from this class.
+ */
+    public abstract class BookStoreController : AbpControllerBase
     {
-        LocalizationResource = typeof(BookStoreResource);
+        protected BookStoreController()
+        {
+            LocalizationResource = typeof(BookStoreResource);
+        }
     }
 }

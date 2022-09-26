@@ -1,15 +1,15 @@
 ﻿using Volo.Abp.Threading;
 
-namespace BookStore;
-
-public static class BookStoreGlobalFeatureConfigurator
+namespace BookStore
 {
-    private static readonly OneTimeRunner OneTimeRunner = new OneTimeRunner();
-
-    public static void Configure()
+    public static class BookStoreGlobalFeatureConfigurator
     {
-        OneTimeRunner.Run(() =>
+        private static readonly OneTimeRunner OneTimeRunner = new OneTimeRunner();
+
+        public static void Configure()
         {
+            OneTimeRunner.Run(() =>
+            {
                 /* You can configure (enable/disable) global features of the used modules here.
                  *
                  * YOU CAN SAFELY DELETE THIS CLASS AND REMOVE ITS USAGES IF YOU DON'T NEED TO IT!
@@ -17,6 +17,7 @@ public static class BookStoreGlobalFeatureConfigurator
                  * Please refer to the documentation to lear more about the Global Features System:
                  * https://docs.abp.io/en/abp/latest/Global-Features
                  */
-        });
+            });
+        }
     }
 }

@@ -9,33 +9,34 @@ using Volo.Abp.PermissionManagement.HttpApi;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.TenantManagement;
 
-namespace BookStore;
-
-[DependsOn(
-    typeof(BookStoreApplicationContractsModule),
-    typeof(AbpAccountHttpApiModule),
-    typeof(AbpIdentityHttpApiModule),
-    typeof(AbpPermissionManagementHttpApiModule),
-    typeof(AbpTenantManagementHttpApiModule),
-    typeof(AbpFeatureManagementHttpApiModule),
-    typeof(AbpSettingManagementHttpApiModule)
-    )]
-public class BookStoreHttpApiModule : AbpModule
+namespace BookStore
 {
-    public override void ConfigureServices(ServiceConfigurationContext context)
+    [DependsOn(
+        typeof(BookStoreApplicationContractsModule),
+        typeof(AbpAccountHttpApiModule),
+        typeof(AbpIdentityHttpApiModule),
+        typeof(AbpPermissionManagementHttpApiModule),
+        typeof(AbpTenantManagementHttpApiModule),
+        typeof(AbpFeatureManagementHttpApiModule),
+        typeof(AbpSettingManagementHttpApiModule)
+    )]
+    public class BookStoreHttpApiModule : AbpModule
     {
-        ConfigureLocalization();
-    }
-
-    private void ConfigureLocalization()
-    {
-        Configure<AbpLocalizationOptions>(options =>
+        public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            options.Resources
-                .Get<BookStoreResource>()
-                .AddBaseTypes(
-                    typeof(AbpUiResource)
-                );
-        });
+            ConfigureLocalization();
+        }
+
+        private void ConfigureLocalization()
+        {
+            Configure<AbpLocalizationOptions>(options =>
+            {
+                options.Resources
+                    .Get<BookStoreResource>()
+                    .AddBaseTypes(
+                        typeof(AbpUiResource)
+                    );
+            });
+        }
     }
 }

@@ -1,17 +1,18 @@
 
+using Microsoft.Extensions.Options;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Fonts;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Utils;
-using System;
-
-using Microsoft.Extensions.Options;
 
 namespace PdfGenerator
 {
     public class PdfGeneratorService : IPdfGeneratorService
     {
-        public async Task<byte[]> GeneratePdf()
+        private readonly PdfGeneratorSettingsOptions _options;
+        public PdfGeneratorService(IOptions<PdfGeneratorSettingsOptions> options) => _options = options.Value;
+        
+        public async Task<byte[]> Generate()
         {
 
             GlobalFontSettings.FontResolver = new FontResolver();
@@ -26,18 +27,15 @@ namespace PdfGenerator
             var layout = new XRect(20, 20, page.Width, page.Height);
             var format = XStringFormats.Center;
 
-            gfx.DrawString("Hello World!", font, textColor, layout, format);
+            gfx.DrawString($"Pdf created by {_options.UserName}!", font, textColor, layout, format);
 
-            byte[] fileContents = null;
-            using (MemoryStream stream = new MemoryStream())
+            byte[] fileContents;
+            using (var stream = new MemoryStream())
             {
                 document.Save(stream, true);
                 fileContents = stream.ToArray();
             }
-
             return await Task.FromResult(fileContents);
         }
-
-      
     }
 }

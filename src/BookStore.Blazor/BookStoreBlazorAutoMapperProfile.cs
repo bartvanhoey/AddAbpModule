@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 
-namespace BookStore.Blazor;
-
-public class BookStoreBlazorAutoMapperProfile : Profile
+namespace BookStore.Blazor
 {
-    public BookStoreBlazorAutoMapperProfile()
+    public class BookStoreBlazorAutoMapperProfile : Profile
     {
-        //Define your AutoMapper configuration here for the Blazor project.
+        public BookStoreBlazorAutoMapperProfile()
+        {
+            //Define your AutoMapper configuration here for the Blazor project.
+        }
     }
 }

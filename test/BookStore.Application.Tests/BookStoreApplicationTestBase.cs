@@ -1,6 +1,7 @@
-﻿namespace BookStore;
-
-public abstract class BookStoreApplicationTestBase : BookStoreTestBase<BookStoreApplicationTestModule>
+﻿namespace BookStore
 {
+    public abstract class BookStoreApplicationTestBase : BookStoreTestBase<BookStoreApplicationTestModule>
+    {
 
+    }
 }

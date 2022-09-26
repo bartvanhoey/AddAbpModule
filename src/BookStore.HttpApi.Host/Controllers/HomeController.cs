@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc;
 
-namespace BookStore.Controllers;
-
-public class HomeController : AbpController
+namespace BookStore.Controllers
 {
-    public ActionResult Index()
+    public class HomeController : AbpController
     {
-        return Redirect("~/swagger");
+        public ActionResult Index()
+        {
+            return Redirect("~/swagger");
+        }
     }
 }
