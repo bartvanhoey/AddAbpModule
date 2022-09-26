@@ -11,11 +11,14 @@ namespace PdfGenerator
     {
         private readonly PdfGeneratorSettingsOptions _options;
         public PdfGeneratorService(IOptions<PdfGeneratorSettingsOptions> options) => _options = options.Value;
-        
+
         public async Task<byte[]> Generate()
         {
 
-            GlobalFontSettings.FontResolver = new FontResolver();
+            if (GlobalFontSettings.FontResolver is not FontResolver)
+            {
+                GlobalFontSettings.FontResolver = new FontResolver();
+            }
 
             var document = new PdfDocument();
             var page = document.AddPage();

@@ -16,8 +16,8 @@
 @code {
     private async Task ExportPdf()
     {
-        var excelBytes = await ExportPdfAppService.GeneratePdf();
+        var pdfBytes = await ExportPdfAppService.GeneratePdf();
         await JsRuntime.InvokeVoidAsync("saveAsFile", $"test_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.pdf",
-            Convert.ToBase64String(excelBytes));
+            Convert.ToBase64String(pdfBytes));
     }
 }

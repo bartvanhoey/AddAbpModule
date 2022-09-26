@@ -1,8 +1,8 @@
 ## Adding a Module to an ABP project made simple
 
-The ABP Framework makes it possible to develop truly modular systems. [Software modularity](https://www.techopedia.com/definition/24772/modularity)
+As you can read in the ABP Framework documentation about [Modularity](https://docs.abp.io/en/abp/6.0/Module-Development-Basics), the ABP Framework was designed to support to build fully [modular](https://www.techopedia.com/definition/24772/modularity) applications.
 
-In today's blog post I will show you how to integrate your own module, in this case a simple PdfGenerator, into an ABP Framework application.
+In today's blog post I will show you how to  create and integrate your own module, in this case a simple PdfGenerator, into an ABP Framework application.
 
 ### Create a new ABP Framework application
 
@@ -107,7 +107,10 @@ namespace PdfGenerator
         public async Task<byte[]> Generate()
         {
 
-            GlobalFontSettings.FontResolver = new FontResolver();
+            if (GlobalFontSettings.FontResolver is not FontResolver)
+            {
+                GlobalFontSettings.FontResolver = new FontResolver();
+            }
 
             var document = new PdfDocument();
             var page = document.AddPage();
@@ -239,13 +242,18 @@ function saveAsFile(filename, bytesBase64) {
 @code {
     private async Task ExportPdf()
     {
-        var excelBytes = await ExportPdfAppService.GeneratePdf();
+        var pdfBytes = await ExportPdfAppService.GeneratePdf();
         await JsRuntime.InvokeVoidAsync("saveAsFile", $"test_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.pdf",
-            Convert.ToBase64String(excelBytes));
+            Convert.ToBase64String(pdfBytes));
     }
 }
 ```
 
-### Run the HttpApi.Host and Blazor projects
+### Test the Pdf
 
+Start both the **Blazor** and the **HttpApi.Host** project to run the application
+and test out the **PdfGenerator module** you just created.
 
+Get the source code on GitHub.
+
+Enjoy and have fun!
