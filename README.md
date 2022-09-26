@@ -1,8 +1,11 @@
+
+[![.NET](https://github.com/bartvanhoey/AddAbpModule/actions/workflows/dotnet.yml/badge.svg)](https://github.com/bartvanhoey/AddAbpModule/actions/workflows/dotnet.yml)
+
 ## Adding a Module to an ABP project made simple
 
-As you can read in the ABP Framework documentation about [Modularity](https://docs.abp.io/en/abp/6.0/Module-Development-Basics), the ABP Framework was designed to support to build fully [modular](https://www.techopedia.com/definition/24772/modularity) applications.
+As you can read in the **ABP Framework** documentation about [Modularity](https://docs.abp.io/en/abp/6.0/Module-Development-Basics), the ABP Framework was designed to support to build fully [modular](https://www.techopedia.com/definition/24772/modularity) applications.
 
-In today's blog post I will show you how to  create and integrate your own module, in this case a simple PdfGenerator, into an ABP Framework application.
+In today's blog post I will show you how to  **create and integrate your own module**, in this case a simple **PdfGenerator**, into an **ABP Framework** application.
 
 ### Create a new ABP Framework application
 
@@ -14,7 +17,7 @@ In today's blog post I will show you how to  create and integrate your own modul
 * Start both the HttpApi.Host project and Blazor project
 * Stop both the HttpApi.Host project and Blazor project
 
-### Create a PdfGenerator ABP Module ()
+### Create a PdfGenerator ABP Module
 
 Open a **command prompt** in the **src** folder of the project and **add a new class library**
 
@@ -22,7 +25,7 @@ Open a **command prompt** in the **src** folder of the project and **add a new c
     dotnet new classlib -n PdfGenerator
 ```
 
-### Add PdfGenerator class project to solution
+### Add PdfGenerator project to solution
 
 Go to the **root of your ABP project** and run the command below:
 
@@ -32,7 +35,7 @@ Go to the **root of your ABP project** and run the command below:
 
 ### Install Nuget packages
 
-Open a **command prompt** in the **root of the PdfGenerator** class library and  install the nuget packages below.
+Open a **command prompt** in the **root of the PdfGenerator** class library and  install the Nuget packages below.
 
 ```bash
     abp add-package Volo.Abp.Core
