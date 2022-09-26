@@ -252,11 +252,11 @@ function saveAsFile(filename, bytesBase64) {
 }
 ```
 
-### Test the Pdf
+### Test the PdfGenerator module
 
 Start both the **Blazor** and the **HttpApi.Host** project to run the application
 and test out the **PdfGenerator module** you just created.
 
-Get the source code on GitHub.
+Get the source code on [GitHub](https://github.com/bartvanhoey/AddAbpModule).
 
 Enjoy and have fun!
