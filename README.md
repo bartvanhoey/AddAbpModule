@@ -163,6 +163,7 @@ Add a **typeof(MyPdfGeneratorModule)** entry in the **DependsOnAttribute**
     typeof(AbpSettingManagementApplicationModule),
     typeof(MyPdfGeneratorModule)
     )]
+```
 
 ### Add A IExportPdfAppService interface the Application.Contracts project
 
