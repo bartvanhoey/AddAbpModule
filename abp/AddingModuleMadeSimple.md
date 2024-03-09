@@ -115,7 +115,7 @@ namespace PdfGenerator
     {
         private readonly PdfGeneratorSettingsOptions _options = options.Value;
 
-        public async Task<byte\[\]> Generate()
+        public async Task<byte[]> Generate()
         {
             if (GlobalFontSettings.FontResolver is not FontResolver)
                 GlobalFontSettings.FontResolver = new FontResolver();
@@ -132,7 +132,7 @@ namespace PdfGenerator
 
             gfx.DrawString($"Pdf created by {_options.UserName}!", font, textColor, layout, format);
 
-            byte\[\] fileContents;
+            byte[] fileContents;
             using (var stream = new MemoryStream())
             {
                 document.Save(stream, true);

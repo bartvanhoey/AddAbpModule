@@ -115,7 +115,7 @@ namespace PdfGenerator
     {
         private readonly PdfGeneratorSettingsOptions _options = options.Value;
 
-        public async Task<byte\[\]> Generate()
+        public async Task<byte[]> Generate()
         {
             if (GlobalFontSettings.FontResolver is not FontResolver)
                 GlobalFontSettings.FontResolver = new FontResolver();
@@ -132,7 +132,7 @@ namespace PdfGenerator
 
             gfx.DrawString($"Pdf created by {_options.UserName}!", font, textColor, layout, format);
 
-            byte\[\] fileContents;
+            byte[] fileContents;
             using (var stream = new MemoryStream())
             {
                 document.Save(stream, true);
@@ -157,7 +157,7 @@ Open a **command prompt** in the **root of the Application** project
 Add a **typeof(MyPdfGeneratorModule)** entry in the **DependsOnAttribute**
 
 ```csharp
-\[DependsOn(
+[DependsOn(
     typeof(BookStoreDomainModule),
     typeof(AbpAccountApplicationModule),
     typeof(BookStoreApplicationContractsModule),
@@ -167,7 +167,7 @@ Add a **typeof(MyPdfGeneratorModule)** entry in the **DependsOnAttribute**
     typeof(AbpFeatureManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule),
     typeof(MyPdfGeneratorModule)
-    )\]
+    )]
 
 ### Add A IExportPdfAppService interface the Application.Contracts project
 
