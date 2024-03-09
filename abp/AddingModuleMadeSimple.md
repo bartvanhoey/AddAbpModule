@@ -189,6 +189,7 @@ namespace BookStore.Application.Contracts
 
 ```csharp
 using System.Threading.Tasks;
+@using BookStore.Application.Contracts;
 using PdfGenerator;
 using Volo.Abp.Application.Services;
 
@@ -230,7 +231,7 @@ function saveAsFile(filename, bytesBase64) {
 
 ```html
 @page "/"
-@using BookStore;
+@using BookStore.Application.Contracts;
 @using Microsoft.JSInterop
 @inject IExportPdfAppService ExportPdfAppService
 @inject IJSRuntime JsRuntime
