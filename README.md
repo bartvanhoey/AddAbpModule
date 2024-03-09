@@ -41,7 +41,7 @@ Open a **command prompt** in the **modules** folder of the project and **add a n
 Go to the **root of your ABP project** and run the command below:
 
 ```bash
-    dotnet sln add modulesPdfGenerator\PdfGenerator.csproj
+    dotnet sln add modules\PdfGenerator\PdfGenerator.csproj
 ```
 
 ### Install Nuget packages
