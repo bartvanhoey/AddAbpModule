@@ -108,7 +108,7 @@ namespace PdfGenerator
 {
     public interface IPdfGeneratorService
     {
-        Task<byte\[\]> Generate();
+        Task<byte[]> Generate();
     }
 
     public class PdfGeneratorService(IOptions<PdfGeneratorSettingsOptions> options) : IPdfGeneratorService
@@ -179,7 +179,7 @@ namespace BookStore.Application.Contracts
 {
     public interface IExportPdfAppService : IApplicationService
     {
-        Task<byte\[\]> GeneratePdf();
+        Task<byte[]> GeneratePdf();
     }
 }
 ```
@@ -196,7 +196,7 @@ namespace BookStore
     public class ExportPdfAppService(IPdfGeneratorService pdfGeneratorService) : ApplicationService, IExportPdfAppService
     {
         private readonly IPdfGeneratorService _pdfService = pdfGeneratorService;
-        public async Task<byte\[\]> GeneratePdf() => await _pdfService.Generate();
+        public async Task<byte[]> GeneratePdf() => await _pdfService.Generate();
     }
 }
 ```
