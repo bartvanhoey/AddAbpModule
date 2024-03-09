@@ -1,3 +1,5 @@
+[![.NET](https://github.com/bartvanhoey/AddAbpModule/actions/workflows/dotnet.yml/badge.svg)](https://github.com/bartvanhoey/AddAbpModule/actions/workflows/dotnet.yml)
+
 ## Adding a Module to an ABP project made simple
 
 As you can read in the **ABP Framework** documentation about [Modularity](https://docs.abp.io/en/abp/6.0/Module-Development-Basics), the ABP Framework was designed to support to build fully [modular](https://www.techopedia.com/definition/24772/modularity) applications.
