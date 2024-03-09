@@ -2,7 +2,19 @@
 
 As you can read in the **ABP Framework** documentation about [Modularity](https://docs.abp.io/en/abp/6.0/Module-Development-Basics), the ABP Framework was designed to support to build fully [modular](https://www.techopedia.com/definition/24772/modularity) applications.
 
-In today's blog post I will show you how to  **create and integrate your own module**, in this case a simple **PdfGenerator**, into an ABP Framework application.
+Today I will show you how to **create and integrate your own module**, in this case a simple **PdfGenerator**, into an **ABP Framework** application.
+
+### Source code
+
+The source code of both projects is [available on GitHub](https://github.com/bartvanhoey/AddAbpModule)
+
+### Requirements
+
+The following tools are needed to be able to run the solution and follow along.
+
+- .NET 8.0 SDK
+- VsCode, Visual Studio 2022 or another compatible IDE
+- ABP CLI 8.0.0
 
 ### Create a new ABP Framework application
 
@@ -10,13 +22,15 @@ In today's blog post I will show you how to  **create and integrate your own mod
     abp new BookStore -u blazor -o BookStore
 ```
 
-* Run the DbMigrator project to apply the database migrations
-* Start both the HttpApi.Host project and Blazor project
-* Stop both the HttpApi.Host project and Blazor project
+- Run the DbMigrator project to apply the database migrations
+- Start both the HttpApi.Host project and Blazor project
+- Stop both the HttpApi.Host project and Blazor project
 
 ### Create a PdfGenerator ABP Module
 
-Open a **command prompt** in the **src** folder of the project and **add a new class library**
+Add a **modules** folder to the root of the project
+
+Open a **command prompt** in the **modules** folder of the project and **add a new class library**
 
 ```bash
     dotnet new classlib -n PdfGenerator
@@ -27,12 +41,12 @@ Open a **command prompt** in the **src** folder of the project and **add a new c
 Go to the **root of your ABP project** and run the command below:
 
 ```bash
-    dotnet sln add src\PdfGenerator\PdfGenerator.csproj
+    dotnet sln add modulesPdfGenerator\PdfGenerator.csproj
 ```
 
 ### Install Nuget packages
 
-Open a **command prompt** in the **root of the PdfGenerator** class library and install the **Nuget** packages below.
+Open a **command prompt** in the **root of the PdfGenerator** class library and  install the Nuget packages below.
 
 ```bash
     abp add-package Volo.Abp.Core
@@ -69,13 +83,12 @@ using Volo.Abp.Modularity;
 
 namespace PdfGenerator
 {
-    public class MyPdfGeneratorModule : AbpModule
+    public class MyPdfGeneratorModule :  AbpModule
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
             var configuration = context.Services.GetConfiguration();
             Configure<PdfGeneratorSettingsOptions>(configuration.GetSection("PdfGeneratorSettings"));
-
             context.Services.AddTransient<IPdfGeneratorService, PdfGeneratorService>();
         }
     }
@@ -85,7 +98,6 @@ namespace PdfGenerator
 ### Add an IPdfGeneratorService interface and a PdfGeneratorService class to the PdfGenerator class library project
 
 ```csharp
-using Volo.Abp.DependencyInjection;
 using Microsoft.Extensions.Options;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Fonts;
@@ -94,23 +106,19 @@ using PdfSharpCore.Utils;
 
 namespace PdfGenerator
 {
-    public interface IPdfGeneratorService : ITransientDependency
+    public interface IPdfGeneratorService
     {
-        Task<byte[]> Generate();
+        Task<byte\[\]> Generate();
     }
 
-    public class PdfGeneratorService : IPdfGeneratorService
+    public class PdfGeneratorService(IOptions<PdfGeneratorSettingsOptions> options) : IPdfGeneratorService
     {
-        private readonly PdfGeneratorSettingsOptions _options;
-        public PdfGeneratorService(IOptions<PdfGeneratorSettingsOptions> options) => _options = options.Value;
-        
-        public async Task<byte[]> Generate()
-        {
+        private readonly PdfGeneratorSettingsOptions _options = options.Value;
 
+        public async Task<byte\[\]> Generate()
+        {
             if (GlobalFontSettings.FontResolver is not FontResolver)
-            {
                 GlobalFontSettings.FontResolver = new FontResolver();
-            }
 
             var document = new PdfDocument();
             var page = document.AddPage();
@@ -124,7 +132,7 @@ namespace PdfGenerator
 
             gfx.DrawString($"Pdf created by {_options.UserName}!", font, textColor, layout, format);
 
-            byte[] fileContents;
+            byte\[\] fileContents;
             using (var stream = new MemoryStream())
             {
                 document.Save(stream, true);
@@ -141,7 +149,7 @@ namespace PdfGenerator
 Open a **command prompt** in the **root of the Application** project
 
 ```bash
-   dotnet add reference ../../src/PdfGenerator/PdfGenerator.csproj
+   dotnet add reference ../../modules/PdfGenerator/PdfGenerator.csproj
 ```
 
 ### Attribute DependsOn in the BookStoreApplicationModule class in the Application project
@@ -149,7 +157,7 @@ Open a **command prompt** in the **root of the Application** project
 Add a **typeof(MyPdfGeneratorModule)** entry in the **DependsOnAttribute**
 
 ```csharp
-[DependsOn(
+\[DependsOn(
     typeof(BookStoreDomainModule),
     typeof(AbpAccountApplicationModule),
     typeof(BookStoreApplicationContractsModule),
@@ -159,7 +167,7 @@ Add a **typeof(MyPdfGeneratorModule)** entry in the **DependsOnAttribute**
     typeof(AbpFeatureManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule),
     typeof(MyPdfGeneratorModule)
-    )]
+    )\]
 
 ### Add A IExportPdfAppService interface the Application.Contracts project
 
@@ -171,7 +179,7 @@ namespace BookStore.Application.Contracts
 {
     public interface IExportPdfAppService : IApplicationService
     {
-        Task<byte[]> GeneratePdf();
+        Task<byte\[\]> GeneratePdf();
     }
 }
 ```
@@ -180,19 +188,15 @@ namespace BookStore.Application.Contracts
 
 ```csharp
 using System.Threading.Tasks;
-using BookStore.Application.Contracts;
 using PdfGenerator;
+using Volo.Abp.Application.Services;
 
-namespace BookStore.Application
+namespace BookStore
 {
-    public class ExportPdfAppService : BookStoreAppService, IExportPdfAppService
-    {    
-        private readonly IPdfGeneratorService _pdfService;
-
-        public ExportPdfAppService(IPdfGeneratorService pdfGeneratorService) 
-            => _pdfService = pdfGeneratorService;
-
-        public async Task<byte[]> GeneratePdf() => await _pdfService.Generate();
+    public class ExportPdfAppService(IPdfGeneratorService pdfGeneratorService) : ApplicationService, IExportPdfAppService
+    {
+        private readonly IPdfGeneratorService _pdfService = pdfGeneratorService;
+        public async Task<byte\[\]> GeneratePdf() => await _pdfService.Generate();
     }
 }
 ```
@@ -225,7 +229,8 @@ function saveAsFile(filename, bytesBase64) {
 
 ```html
 @page "/"
-@using BookStore.Application.Contracts
+@using BookStore;
+@using Microsoft.JSInterop
 @inject IExportPdfAppService ExportPdfAppService
 @inject IJSRuntime JsRuntime
 

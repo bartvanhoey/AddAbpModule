@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 
-namespace BookStore.Application.Contracts
+namespace BookStore
 {
-    public interface IExportPdfAppService : IApplicationService
+    public interface IExportPdfAppService :  IApplicationService
     {
         Task<byte[]> GeneratePdf();
     }
