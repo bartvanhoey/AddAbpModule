@@ -157,7 +157,7 @@ Open a **command prompt** in the **root of the Application** project
 Add a **typeof(MyPdfGeneratorModule)** entry in the **DependsOnAttribute**
 
 ```csharp
-\[DependsOn(
+[DependsOn(
     typeof(BookStoreDomainModule),
     typeof(AbpAccountApplicationModule),
     typeof(BookStoreApplicationContractsModule),
@@ -167,7 +167,8 @@ Add a **typeof(MyPdfGeneratorModule)** entry in the **DependsOnAttribute**
     typeof(AbpFeatureManagementApplicationModule),
     typeof(AbpSettingManagementApplicationModule),
     typeof(MyPdfGeneratorModule)
-    )\]
+    )]
+```
 
 ### Add A IExportPdfAppService interface the Application.Contracts project
 
